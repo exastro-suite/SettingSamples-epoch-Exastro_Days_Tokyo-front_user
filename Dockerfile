@@ -1,0 +1,25 @@
+FROM    ubuntu:18.04
+
+RUN echo "RUN START" \
+&&  apt-get -y update  \
+&&  apt-get -y upgrade \
+&&  apt-get -y install \
+    locales \
+    curl \
+    python3-distutils \
+    vim \
+&&  curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py \
+&&  python3 get-pip.py \
+&&  python3 -m pip install -U pip \
+&&  python3 -m pip install requests \
+&&  python3 -m pip install Flask \
+&&  python3 -m pip install pytz \
+&&  python3 -m pip install markdown \
+&&  echo "RUN FINISH"
+
+WORKDIR /app
+
+COPY ./ /app/
+
+ENV FLASK_APP=front_user
+CMD ["flask", "run", "--with-threads"]
