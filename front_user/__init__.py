@@ -35,8 +35,8 @@ def create_app(test_config=None):
         # テスト用設定を上書き
         app.config.from_mapping(test_config)
 
-    from .views.event import event
+    from .views.event import event_app
 
-    app.register_blueprint(event, url_prefix="/event")
+    app.register_blueprint(event_app, url_prefix="/event")
 
     return app

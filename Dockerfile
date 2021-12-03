@@ -22,4 +22,4 @@ WORKDIR /app
 COPY ./ /app/
 
 ENV FLASK_APP=front_user
-CMD ["flask", "run", "--with-threads"]
+CMD ["flask", "run", "-h", "0.0.0.0","--with-threads"]

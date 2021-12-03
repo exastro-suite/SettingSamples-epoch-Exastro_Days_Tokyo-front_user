@@ -19,7 +19,7 @@ import traceback
 
 from logging import getLogger
 
-from dto import EventHeading
+from front_user.models.dto import EventHeading
 
 logger = getLogger(__name__)
 
@@ -32,6 +32,7 @@ def getEvents():
     header = createHeader()
     body = {}
 
+    event_list = []
     try:
         # 取得
         response = requests.post(base_url + api_path, headers=header, data=json.dumps(body))
@@ -58,8 +59,8 @@ def createHeader():
 
 def createBaseUrl():
 
-    protocol = os.environ['_EVENT_PROTOCOL']
-    host = os.environ['_EVENT_HOST']
-    port = os.environ['_EVENT_PORT']
+    protocol = os.environ['SERVICE_EVENT_PROTOCOL']
+    host = os.environ['SERVICE_EVENT_HOST']
+    port = os.environ['SERVICE_EVENT_PORT']
 
     return protocol + '://' + host + ':' + port

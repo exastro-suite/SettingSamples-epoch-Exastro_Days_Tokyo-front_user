@@ -17,12 +17,12 @@ from flask import Blueprint, render_template, request
 from logging import getLogger
 from operator import attrgetter
 
-from models import event
+from front_user.models import event
 
 event_app = Blueprint("event", __name__, template_folder="templates")
 logger = getLogger(__name__)
 
-@event_app.route("/", methods=("GET"))
+@event_app.route("/", methods=["GET"])
 def eventList():
     logger.info("call: event")
 
@@ -38,7 +38,7 @@ def eventList():
         "event/event.html", upcomings=upcomings, archives=archives
     )
 
-@event_app.route("/<int:event_id>", methods=("GET"))
+@event_app.route("/<int:event_id>", methods=["GET"])
 def eventDetail(event_id):
     logger.info("call: eventDetail [event_id={}]" % (event_id))
 
