@@ -40,6 +40,6 @@ def eventList():
 
 @event_app.route("/<int:event_id>", methods=["GET"])
 def eventDetail(event_id):
-    logger.info("call: eventDetail [event_id={}]" % (event_id))
+    logger.info("call: eventDetail [event_id={}]".format(event_id))
 
     return ""

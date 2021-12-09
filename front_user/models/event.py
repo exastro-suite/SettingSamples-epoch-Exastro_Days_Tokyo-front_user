@@ -25,17 +25,18 @@ logger = getLogger(__name__)
 
 
 def getEvents():
-    logger.info("")
+    logger.debug("Method called.")
 
     base_url = createBaseUrl()
-    api_path = ''
+    api_path = '/api/v1/event'
     header = createHeader()
     body = {}
 
     event_list = []
     try:
         # 取得
-        response = requests.post(base_url + api_path, headers=header, data=json.dumps(body))
+        logger.debug("request_url: {}".format(base_url + api_path))
+        response = requests.get(base_url + api_path, headers=header, data=json.dumps(body))
         if response.status_code != 200:
             raise Exception(response)
 
