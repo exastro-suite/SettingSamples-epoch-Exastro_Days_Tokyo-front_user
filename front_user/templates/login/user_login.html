@@ -16,28 +16,17 @@
 {% extends 'base.html' %}
 
 {% block link_css %}
-<link rel="stylesheet" href="{{ url_for("static", filename="css/event.css") }}" />
+<link rel="stylesheet" href="{{ url_for("static", filename="css/user_login.css") }}" />
 {% endblock %}
-{% block title %}events{% endblock %}
+{% block title %}user_login{% endblock %}
 
 {% block content %}
 <div class="content-body">
-<h1>
-  upcoming events
-</h1>
-{% for item in upcomings %}
-  <a href="/{{ item.event_id }}">
-    <p>{{ item.event_name }}</p>
-  </a>
-{% endfor %}
-
-<h1>
-  archive events
-</h1>
-{% for item in archives %}
-  <a href="/{{ item.event_id }}">
-    <p>{{ item.event_name }}</p>
-  </a>
-{% endfor %}
+<p class="">
+</p>
+<p class="">
+</p>
+<p class="">
+</p>
 </div>
 {% endblock %}

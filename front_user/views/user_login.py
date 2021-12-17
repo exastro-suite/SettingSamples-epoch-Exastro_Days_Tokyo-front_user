@@ -12,12 +12,16 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-class EventHeading:
+from flask import Blueprint, render_template
+from logging import getLogger
 
-    def __init__(self, event_id, event_name, event_date):
-        self.event_id = event_id
-        self.event_name = event_name
-        self.event_date = event_date
+user_login_app = Blueprint("user_login", __name__, template_folder="templates")
+logger = getLogger(__name__)
 
-    def __str__(self):
-        return "event{{id: {}, name: {}, date: {}}}" % (self.event_id, self.event_name, self.event_date)
+@user_login_app.route("/", methods=["GET"])
+def user_login():
+    logger.info("call: user_login")
+
+    return render_template(
+        "user_login/user_login.html"
+    )

@@ -1,4 +1,3 @@
-<!--
 #   Copyright 2021 NEC Corporation
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,32 +11,21 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
--->
-{% extends 'base.html' %}
 
-{% block link_css %}
-<link rel="stylesheet" href="{{ url_for("static", filename="css/event.css") }}" />
-{% endblock %}
-{% block title %}events{% endblock %}
+from datetime import datetime
+from flask import Blueprint, render_template, request, jsonify
+from logging import getLogger
+from operator import attrgetter
 
-{% block content %}
-<div class="content-body">
-<h1>
-  upcoming events
-</h1>
-{% for item in upcomings %}
-  <a href="/{{ item.event_id }}">
-    <p>{{ item.event_name }}</p>
-  </a>
-{% endfor %}
+from front_user.models import seminar
 
-<h1>
-  archive events
-</h1>
-{% for item in archives %}
-  <a href="/{{ item.event_id }}">
-    <p>{{ item.event_name }}</p>
-  </a>
-{% endfor %}
-</div>
-{% endblock %}
+seminar_app = Blueprint("seminar", __name__, template_folder="templates")
+logger = getLogger(__name__)
+
+@seminar_app.route("/<int:seminar_id>", methods=["GET"])
+def seminarDetail(seminar_id):
+    logger.info("call: seminarDetail [seminar_id={}]".format(seminar_id))
+
+    seminar_detail = seminar.get_seminar_detail()
+
+    return jsonify({'result': seminar_detail})

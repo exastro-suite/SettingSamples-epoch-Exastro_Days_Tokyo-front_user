@@ -16,4 +16,6 @@
 // JavaScript Document
 ;
 
-$(function(){});
+$(function(){
+    alert('debug: timetable.js');
+});

@@ -19,17 +19,15 @@ import traceback
 
 from logging import getLogger
 
-from front_user.models.dto import EventHeading
-
 logger = getLogger(__name__)
 
 
-def getEvents():
+def get_events():
     logger.debug("Method called.")
 
-    base_url = createBaseUrl()
+    base_url = create_base_url()
     api_path = '/api/v1/event'
-    header = createHeader()
+    header = create_header()
     body = {}
 
     event_list = []
@@ -40,7 +38,7 @@ def getEvents():
         if response.status_code != 200:
             raise Exception(response)
 
-        event_list = [ EventHeading(event_json[0], event_json[1], event_json[2]) for event_json in enumerate(response.json)]
+        event_list = response.json
 
     except Exception as e:
         logger.debug(e)
@@ -50,7 +48,64 @@ def getEvents():
 
     return event_list
 
-def createHeader():
+def get_event_detail(event_id):
+    logger.debug("Method called.")
+
+    base_url = create_base_url()
+    api_path = '/api/v1/event/{}'.format(event_id)
+    header = create_header()
+    body = {}
+
+    event_detail = {}
+    try:
+        # 取得
+        logger.debug("request_url: {}".format(base_url + api_path))
+        response = requests.get(base_url + api_path, headers=header, data=json.dumps(body))
+        if response.status_code != 200:
+            raise Exception(response)
+
+        event_detail = response.json
+
+    except Exception as e:
+        logger.debug(e)
+        logger.debug("traceback:" + traceback.format_exc())
+
+        # todo
+
+    return event_detail
+
+def get_timetable(event_id, user_id = None, kind_of_sso = None):
+    logger.debug("Method called.")
+
+    base_url = create_base_url()
+    api_path = '/api/v1/seminar'
+    header = create_header()
+    body = {"event_id": event_id}
+
+    if user_id:
+        body['user_id'] = user_id
+    if kind_of_sso:
+        body['kind_of_sso'] = kind_of_sso
+
+    event_timetable = []
+    try:
+        # 取得
+        logger.debug("request_url: {}".format(base_url + api_path))
+        response = requests.get(base_url + api_path, headers=header, data=json.dumps(body))
+        if response.status_code != 200:
+            raise Exception(response)
+
+        event_timetable = response.json
+
+    except Exception as e:
+        logger.debug(e)
+        logger.debug("traceback:" + traceback.format_exc())
+
+        # todo
+
+    return event_timetable
+
+def create_header():
     # ヘッダ情報
     header = {
         'Content-Type': 'application/json',
@@ -58,7 +113,7 @@ def createHeader():
 
     return header
 
-def createBaseUrl():
+def create_base_url():
 
     protocol = os.environ['SERVICE_EVENT_PROTOCOL']
     host = os.environ['SERVICE_EVENT_HOST']

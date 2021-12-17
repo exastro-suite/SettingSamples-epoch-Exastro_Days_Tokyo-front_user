@@ -1,4 +1,4 @@
-<!--
+/*
 #   Copyright 2021 NEC Corporation
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,32 +12,10 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
--->
-{% extends 'base.html' %}
+*/
+// JavaScript Document
+;
 
-{% block link_css %}
-<link rel="stylesheet" href="{{ url_for("static", filename="css/event.css") }}" />
-{% endblock %}
-{% block title %}events{% endblock %}
-
-{% block content %}
-<div class="content-body">
-<h1>
-  upcoming events
-</h1>
-{% for item in upcomings %}
-  <a href="/{{ item.event_id }}">
-    <p>{{ item.event_name }}</p>
-  </a>
-{% endfor %}
-
-<h1>
-  archive events
-</h1>
-{% for item in archives %}
-  <a href="/{{ item.event_id }}">
-    <p>{{ item.event_name }}</p>
-  </a>
-{% endfor %}
-</div>
-{% endblock %}
+$(function(){
+    
+});
