@@ -28,10 +28,10 @@ def eventList():
 
     events = event.get_events()
 
-    upcomings = [x for x in events if x.event_date > datetime.now(globals.TZ)]
+    upcomings = [x for x in events if x['event_date'] > datetime.now()]
     upcomings.sort(key=attrgetter('event_date'), reverse=True)
 
-    archives = [x for x in events if x.event_date <= datetime.now(globals.TZ)]
+    archives = [x for x in events if x['event_date'] <= datetime.now()]
     archives.sort(key=attrgetter('event_date'), reverse=True)
 
     return render_template(

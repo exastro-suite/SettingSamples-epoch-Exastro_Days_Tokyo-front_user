@@ -38,7 +38,7 @@ def get_events():
         if response.status_code != 200:
             raise Exception(response)
 
-        event_list = response.json
+        event_list = response.json()
 
     except Exception as e:
         logger.debug(e)
@@ -64,7 +64,7 @@ def get_event_detail(event_id):
         if response.status_code != 200:
             raise Exception(response)
 
-        event_detail = response.json
+        event_detail = response.json()
 
     except Exception as e:
         logger.debug(e)
@@ -95,7 +95,7 @@ def get_timetable(event_id, user_id = None, kind_of_sso = None):
         if response.status_code != 200:
             raise Exception(response)
 
-        event_timetable = response.json
+        event_timetable = response.json()
 
     except Exception as e:
         logger.debug(e)
