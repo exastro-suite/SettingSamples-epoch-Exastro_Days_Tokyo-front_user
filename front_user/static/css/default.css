@@ -20,3 +20,20 @@ body {
   padding: 0;
   margin: 0;
 }
+
+.content-header {
+  height: 100px;
+}
+
+.content-header .header-menu {
+  display: inline-block;
+}
+
+.content-body {
+  width: 80%;
+  margin-top: 100px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: bisque;
+  text-align: center;
+}

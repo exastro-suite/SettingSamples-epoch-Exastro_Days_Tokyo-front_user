@@ -16,6 +16,12 @@
 */
 /* CSS Document */
 
+.content-body .event-title {
+  display: inline-block;
+  padding: 20px 10px;
+  background-color: burlywood;
+}
+
 h1 {
-  color: blue;
+  color: cornflowerblue;
 }

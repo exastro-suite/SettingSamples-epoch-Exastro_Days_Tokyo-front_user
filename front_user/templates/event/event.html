@@ -26,18 +26,22 @@
   upcoming events
 </h1>
 {% for item in upcomings %}
+<div>
   <a href="/{{ item.event_id }}">
-    <p>{{ item.event_name }}</p>
+    <div class="event-title">{{ item.event_name }}</div>
   </a>
+</div>
 {% endfor %}
 
 <h1>
   archive events
 </h1>
 {% for item in archives %}
+<div>
   <a href="/{{ item.event_id }}">
-    <p>{{ item.event_name }}</p>
+    <div class="event-title">{{ item.event_name }}</div>
   </a>
+</div>
 {% endfor %}
 </div>
 {% endblock %}

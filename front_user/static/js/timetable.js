@@ -17,5 +17,5 @@
 ;
 
 $(function(){
-    alert('debug: timetable.js');
+    console.log('debug: timetable.js');
 });

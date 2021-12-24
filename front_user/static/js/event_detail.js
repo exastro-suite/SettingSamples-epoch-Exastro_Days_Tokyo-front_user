@@ -17,5 +17,5 @@
 ;
 
 $(function(){
-    alert('debug: event_detail.js');
+    console.log('debug: event_detail.js');
 });
