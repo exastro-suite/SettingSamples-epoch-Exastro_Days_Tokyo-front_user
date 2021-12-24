@@ -28,11 +28,11 @@ def eventList():
 
     events = event.get_events()
 
-    upcomings = [x for x in events if x['event_date'] > datetime.now()]
-    upcomings.sort(key=attrgetter('event_date'), reverse=True)
+    upcomings = [x for x in events if str_to_datetime(x['event_date']) > datetime.now()]
+    upcomings = sorted(upcomings, key=lambda x:x['event_date'], reverse=True)
 
-    archives = [x for x in events if x['event_date'] <= datetime.now()]
-    archives.sort(key=attrgetter('event_date'), reverse=True)
+    archives = [x for x in events if str_to_datetime(x['event_date']) <= datetime.now()]
+    archives = sorted(archives, key=lambda x:x['event_date'], reverse=True)
 
     return render_template(
         "event/event.html", upcomings=upcomings, archives=archives
@@ -45,7 +45,7 @@ def eventDetail(event_id):
     event_detail = event.get_event_detail(event_id)
 
     header_data = {
-        "event_name": event_detail.event_name,
+        "event_name": event_detail['event_name'],
         "menu_item_list": [
             {
                 "name": "event list",
@@ -70,3 +70,8 @@ def timetable(event_id):
     return render_template(
         "event/timetable.html", seminars=timetable.seminars, blocks=timetable.mst_block
     )
+
+def str_to_datetime(datetime_str):
+
+    # return datetime.fromisoformat(datetime_str.replace('Z', '+00:00')) # python3.7~
+    return datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M:%S.%fZ') # not %z, because https://bugs.python.org/issue15873
