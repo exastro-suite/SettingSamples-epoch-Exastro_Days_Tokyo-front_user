@@ -68,7 +68,7 @@ def timetable(event_id):
     timetable = event.get_timetable(event_id)
 
     return render_template(
-        "event/timetable.html", seminars=timetable.seminars, blocks=timetable.mst_block
+        "event/timetable.html", seminars=timetable['seminars'], blocks=timetable['mst_block'], classes=timetable['mst_classes']
     )
 
 def str_to_datetime(datetime_str):

@@ -33,18 +33,30 @@
   <div class="timetable">
     <table>
       <tr>
+        <th class="class-col">
+        </th>
         {% for block in blocks %}
-        <th>{{ block }}</th>
+        <th class="seminar-col">{{ block }}</th>
         {% endfor %}
       </tr>
-      {% for row in ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"] %}
-      {% set outer_loop = loop %}
       <tr>
+        <td class="class-col">
+          {% for cls in classes %}
+          <div class="classes">
+            {{ cls }}
+          </div>
+          {% endfor %}
+        </td>
         {% for block in blocks %}
-        <td id="cell-{{ outer_loop.index }}-{{ loop.index }}"></td>
+        <td class="" data-block-{{ block }}>
+          {% for cls in classes %}
+          <div class="seminar-col seminar">
+            {{ seminars[block][cls] }}
+          </div>
+          {% endfor %}
+        </td>
         {% endfor %}
       </tr>
-      {% endfor %}
     </table>
   </div>
 </div>
