@@ -15,6 +15,7 @@ RUN echo "RUN START" \
 &&  python3 -m pip install Flask \
 &&  python3 -m pip install pytz \
 &&  python3 -m pip install markdown \
+&&  python3 -m pip install google-auth \
 &&  echo "RUN FINISH"
 
 WORKDIR /app

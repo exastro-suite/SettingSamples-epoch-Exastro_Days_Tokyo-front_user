@@ -18,11 +18,51 @@
 {% block link_css %}
 <link rel="stylesheet" href="{{ url_for("static", filename="css/user_login.css") }}" />
 {% endblock %}
+
+{% block script_js %}
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<meta name="google-signin-client_id" content="{{ sso_authc_data["google"]["client_id"] }}">
+<script>
+var prev_url = document.referrer;
+</script>
+{% endblock %}
+
 {% block title %}user_login{% endblock %}
 
 {% block content %}
 <div class="content-body">
 <p class="">
+  <div class="g-signin2" data-onsuccess="onSignIn"></div>
+  <script>
+    function onSignIn(googleUser) {
+      var id_token = googleUser.getAuthResponse().id_token;
+
+      $.ajax({
+        type: 'POST',
+        url: '/login_succeeded',
+        contentType: 'application/x-www-form-urlencoded',
+        data: JSON.stringify({"id_token": id_token}),
+      })
+      .done(function(xhr) {
+        console.log('Session data updated');
+
+        var hereHost = window.location.hostname;
+        var sStr = "^https?://" + hereHost;
+        var rExp = new RegExp( sStr, "i" );
+
+        var default_url = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port;
+        if( ref.length == 0 ) {
+          window.location.href = default_url;
+        }
+        else if( ref.match( rExp ) ) {
+          window.location.href = prev_url;
+        }
+        else {
+          window.location.href = default_url;
+        }
+      });
+    }
+  </script>
 </p>
 <p class="">
 </p>

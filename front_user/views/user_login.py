@@ -12,8 +12,13 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from flask import Blueprint, render_template
+import os
+import requests
+
+from flask import Blueprint, render_template, request
 from logging import getLogger
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
 
 user_login_app = Blueprint("user_login", __name__, template_folder="templates")
 logger = getLogger(__name__)
@@ -22,6 +27,38 @@ logger = getLogger(__name__)
 def user_login():
     logger.info("call: user_login")
 
+    sso_authc_data = {
+        "google": {
+            "client_id": os.environ.get('SSO_GOOGLE_CLIENT_ID', None),
+        },
+        "github": {
+            "client_id": os.environ['SSO_GITHUB_CLIENT_ID'],
+            "client_secret": os.environ['SSO_GITHUB_CLIENT_SECRET'],
+        },
+        "twitter": {
+            "client_id": os.environ['SSO_TWITTER_CLIENT_ID'],
+            "client_secret": os.environ['SSO_TWITTER_CLIENT_SECRET'],
+        },
+    }
+
     return render_template(
-        "user_login/user_login.html"
+        "login/user_login.html", sso_authc_data=sso_authc_data
     )
+
+@user_login_app.route("/login_succeeded", methods=["POST"])
+def login_succeeded():
+    logger.info("call: login_succeeded")
+
+    try:
+        id_token = request.json.get('id_token')
+        # Specify the CLIENT_ID of the app that accesses the backend:
+        GOOGLE_CLIENT_ID = os.environ.get('SSO_GOOGLE_CLIENT_ID', None)
+        idinfo = id_token.verify_oauth2_token(id_token, google_requests.Request(), GOOGLE_CLIENT_ID)
+
+        # ID token is valid. Get the user's Google Account ID from the decoded token.
+        userid = idinfo['sub']
+        logger.info("debug: userid=" + userid)
+
+    except ValueError:
+        # Invalid token
+        logger.warn("Invalid token")
