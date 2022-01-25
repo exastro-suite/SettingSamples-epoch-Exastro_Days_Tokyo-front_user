@@ -13,11 +13,10 @@
 #   limitations under the License.
 
 import os
-import requests
 
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, session
 from logging import getLogger
-from google.oauth2 import id_token
+from google.oauth2 import id_token as google_id_token
 from google.auth.transport import requests as google_requests
 
 user_login_app = Blueprint("user_login", __name__, template_folder="templates")
@@ -32,12 +31,10 @@ def user_login():
             "client_id": os.environ.get('SSO_GOOGLE_CLIENT_ID', None),
         },
         "github": {
-            "client_id": os.environ['SSO_GITHUB_CLIENT_ID'],
-            "client_secret": os.environ['SSO_GITHUB_CLIENT_SECRET'],
+            "client_id": os.environ.get('SSO_GITHUB_CLIENT_ID', None),
         },
         "twitter": {
-            "client_id": os.environ['SSO_TWITTER_CLIENT_ID'],
-            "client_secret": os.environ['SSO_TWITTER_CLIENT_SECRET'],
+            "client_id": os.environ.get('SSO_TWITTER_CLIENT_ID', None),
         },
     }
 
@@ -51,14 +48,39 @@ def login_succeeded():
 
     try:
         id_token = request.json.get('id_token')
+        user_id, user_name = _get_userinfo(id_token)
+
+        session['user_id'] = user_id
+        session['name'] = user_name
+
+        # debug
+        logger.info(session.sid)
+        logger.info(session)
+
+    except Exception as e:
+        raise
+
+    return '', 204
+
+def _get_userinfo(id_token):
+    logger.info("call: _get_userinfo")
+
+    try:
+        # -+-+- workaround -+-+-
+        os.environ['CURL_CA_BUNDLE'] = ''
+        # -+-+- workaround -+-+-
+
         # Specify the CLIENT_ID of the app that accesses the backend:
         GOOGLE_CLIENT_ID = os.environ.get('SSO_GOOGLE_CLIENT_ID', None)
-        idinfo = id_token.verify_oauth2_token(id_token, google_requests.Request(), GOOGLE_CLIENT_ID)
+        idinfo = google_id_token.verify_oauth2_token(id_token, google_requests.Request(), GOOGLE_CLIENT_ID)
 
         # ID token is valid. Get the user's Google Account ID from the decoded token.
-        userid = idinfo['sub']
-        logger.info("debug: userid=" + userid)
+        user_id = idinfo['sub']
+        user_name = idinfo['name']
 
     except ValueError:
         # Invalid token
-        logger.warn("Invalid token")
+        logger.info("Invalid token")
+        raise
+
+    return user_id, user_name

@@ -39,8 +39,9 @@ var prev_url = document.referrer;
 
       $.ajax({
         type: 'POST',
-        url: '/login_succeeded',
-        contentType: 'application/x-www-form-urlencoded',
+        url: '/login/login_succeeded',
+        // contentType: 'application/x-www-form-urlencoded',
+        contentType: 'application/json',
         data: JSON.stringify({"id_token": id_token}),
       })
       .done(function(xhr) {

@@ -13,10 +13,14 @@
 #   limitations under the License.
 
 import os
+import redis
+import secrets
 from json import load
 from flask import Flask
+from flask_session import Session
 from logging.config import dictConfig
 
+sess = Session()
 
 def create_app(test_config=None):
     # Logging 設定ファイル読み込み
@@ -34,6 +38,17 @@ def create_app(test_config=None):
     if test_config is not None:
         # テスト用設定を上書き
         app.config.from_mapping(test_config)
+
+    # session data
+    env_secret_key = os.environ.get('SECRET_KEY', default=None)
+    app.secret_key = env_secret_key if env_secret_key else secrets.token_hex(16)
+    app.config['SESSION_TYPE'] = 'redis'
+    # app.config['SESSION_COOKIE_SECURE'] = True
+    # app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+    app.config['PERMANENT_SESSION_LIFETIME'] = 1800 # (s) = 30 min
+    app.config['SESSION_USE_SIGNER'] = True
+    app.config['SESSION_REDIS'] = redis.from_url(os.environ.get('REDIS_URL'))
+    sess.init_app(app)
 
     from .views.event import event_app
     from .views.seminar import seminar_app
