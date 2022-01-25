@@ -13,9 +13,11 @@ RUN echo "RUN START" \
 &&  python3 -m pip install -U pip \
 &&  python3 -m pip install requests \
 &&  python3 -m pip install Flask \
+&&  python3 -m pip install Flask-Session \
 &&  python3 -m pip install pytz \
 &&  python3 -m pip install markdown \
 &&  python3 -m pip install google-auth \
+&&  python3 -m pip install redis \
 &&  echo "RUN FINISH"
 
 WORKDIR /app
