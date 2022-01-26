@@ -67,8 +67,22 @@ def timetable(event_id):
 
     timetable = event.get_timetable(event_id)
 
+    header_data = {
+        "event_name": timetable['event_name'],
+        "menu_item_list": [
+            {
+                "name": "event list",
+                "url_path": "/",
+            },
+            {
+                "name": "timetable",
+                "url_path": "/{}/timetable".format(event_id),
+            }
+        ],
+    }
+
     return render_template(
-        "event/timetable.html", seminars=timetable['seminars'], blocks=timetable['mst_block'], classes=timetable['mst_classes']
+        "event/timetable.html", header_data=header_data, seminars=timetable['seminars'], blocks=timetable['mst_block'], classes=timetable['mst_classes']
     )
 
 def str_to_datetime(datetime_str):

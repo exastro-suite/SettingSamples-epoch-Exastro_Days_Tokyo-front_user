@@ -24,44 +24,29 @@
 {% block title %}timetable{% endblock %}
 
 {% block header %}
-<div class="content-header">
-</div>
+<header id="header">
+  <div class="headerInner">
+    <h1 class="headerTitle">テストイベント</h1>
+    <nav class="headerMenu">
+      <ul class="headerMenuList">
+        <li class="headerMenuItem"><a class="headerMenuLink" href="#">イベント一覧</a></li>
+        <li class="headerMenuItem"><a class="headerMenuLink" href="#">ログイン</a></li>
+      </ul>
+    </nav>
+    <dl class="userInfo">
+      <dt class="userName">Epoch Uuser</dt>
+      <dd class="userIcon">EU</dd>
+    </dl>
+    <div class="userMenu">
+      <ul class="userMenuList">
+        <li class="userMenuItem"><button class="userMenuButton" data-type="dummy">dummy</button></li>
+        <li class="userMenuItem"><button class="userMenuButton" data-type="logout">ログアウト</button></li>
+      </ul>
+    </div>
+  </div>
+</header>
 {% endblock %}
 
 {% block content %}
-<div class="content-body">
-  <div class="timetable">
-    <table>
-      <tr>
-        <th class="class-col">
-        </th>
-        {% for block in blocks %}
-        <th class="seminar-col">{{ block }}</th>
-        {% endfor %}
-      </tr>
-      <tr>
-        <td class="class-col">
-          {% for cls in classes %}
-          <div class="classes">
-            {{ cls }}
-          </div>
-          {% endfor %}
-        </td>
-        {% for block in blocks %}
-        <td class="" data-block-{{ block }}>
-          {% for cls in classes %}
-          <div class="seminar-col seminar">
-            {{ seminars[block][cls] }}
-          </div>
-          {% endfor %}
-        </td>
-        {% endfor %}
-      </tr>
-    </table>
-  </div>
-</div>
-
-<div class="seminar-detail-modal">
-
-</div>
+<main id="main"></main>
 {% endblock %}
