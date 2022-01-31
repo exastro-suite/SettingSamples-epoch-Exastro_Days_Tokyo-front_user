@@ -20,28 +20,63 @@
 {% endblock %}
 {% block title %}events{% endblock %}
 
-{% block content %}
-<div class="content-body">
-<h1>
-  upcoming events
-</h1>
-{% for item in upcomings %}
-<div>
-  <a href="/{{ item.event_id }}">
-    <div class="event-title">{{ item.event_name }}</div>
-  </a>
-</div>
-{% endfor %}
+{% block header %}
+<header id="header">
+  <div class="headerInner">
+  </div>
+</header>
+{% endblock %}
 
-<h1>
-  archive events
-</h1>
-{% for item in archives %}
-<div>
-  <a href="/{{ item.event_id }}">
-    <div class="event-title">{{ item.event_name }}</div>
-  </a>
-</div>
-{% endfor %}
-</div>
+{% block content %}
+<main id="main">
+  <article id="event-list">
+    <section class="block">
+      <h2 class="blockTitle">
+        upcoming events
+      </h2>
+      <ol class="blockList">
+        {% if upcomings|length %}
+        {% for item in upcomings %}
+        <li class="blockItem">
+          <a href="/{{ item.event_path }}">
+            <dl class="event">
+              <dd class="eventTitle">{{ item.event_name }}</dd>
+            </dl>
+          </a>
+        </li>
+        {% endfor %}
+        {% else %}
+        <li class="blockItem">
+          <dl class="event nodata">
+            <dd class="eventTitle">Not planned yet.</dd>
+          </adl
+        </li>
+        {% endif %}
+      </ol>
+
+      <h2 class="blockTitle">
+        archive events
+      </h2>
+      <ol class="blockList">
+        {% if archives|length %}
+        {% for item in archives %}
+        <li class="blockItem">
+          <a href="/{{ item.event_path }}">
+            <dl class="event">
+              <dd class="eventTitle">{{ item.event_name }}</dd>
+            </dl>
+          </a>
+        </li>
+        {% endfor %}
+        {% else %}
+        <li class="blockItem">
+          <dl class="event nodata">
+            <dd class="eventTitle">No archives.</dd>
+          </adl
+        </li>
+        {% endif %}
+      </ol>
+    </section>
+  </article>
+</main>
 {% endblock %}

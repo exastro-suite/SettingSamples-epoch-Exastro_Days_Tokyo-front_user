@@ -39,7 +39,7 @@ var prev_url = document.referrer;
 
       $.ajax({
         type: 'POST',
-        url: '/login/login_succeeded',
+        url: '/login_succeeded',
         // contentType: 'application/x-www-form-urlencoded',
         contentType: 'application/json',
         data: JSON.stringify({"id_token": id_token}),
@@ -52,10 +52,10 @@ var prev_url = document.referrer;
         var rExp = new RegExp( sStr, "i" );
 
         var default_url = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port;
-        if( ref.length == 0 ) {
+        if( prev_url.length == 0 ) {
           window.location.href = default_url;
         }
-        else if( ref.match( rExp ) ) {
+        else if( prev_url.match( rExp ) ) {
           window.location.href = prev_url;
         }
         else {

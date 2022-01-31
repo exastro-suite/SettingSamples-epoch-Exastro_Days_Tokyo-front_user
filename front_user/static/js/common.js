@@ -17,5 +17,38 @@
 ;
 
 $(function(){
-    
+
+/* -------------------------------------------------- *\
+  ヘッダー
+\* -------------------------------------------------- */
+const $header = $('#header');
+$header.find('.userInfo').on('click', function(){
+  const $window = $( window );
+  $header.find('.userMenu').toggleClass('open');
+  $window.on('mousedown.userMenu', function(e){
+    if ( !$( e.target ).closest('.userMenu, .userInfo').length ) {
+      $header.find('.userMenu').removeClass('open');
+      $window.off('mousedown.userMenu');
+    }
+  });
+});
+
+$header.find('.userMenuButton').on('click', function(){
+  const $b = $( this ),
+        type = $b.attr('data-type');
+  switch( type ) {
+    case 'logout':
+
+      $.ajax({
+        type: 'GET',
+        url: '/logout',
+      })
+      .done(function(xhr) {
+        console.log('logout');
+        window.location.reload();
+      });
+    break;
+  }
+});
+
 });

@@ -20,50 +20,9 @@ function init( role ){
 const loadClassName = 'loading';
 
 /* -------------------------------------------------- *\
-  ヘッダー
-\* -------------------------------------------------- */
-const $header = $('#header');
-$header.find('.userInfo').on('click', function(){
-  const $window = $( window );
-  $header.find('.userMenu').toggleClass('open');
-  $window.on('mousedown.userMenu', function(e){
-    if ( !$( e.target ).closest('.userMenu, .userInfo').length ) {
-      $header.find('.userMenu').removeClass('open');
-      $window.off('mousedown.userMenu');
-    }
-  });
-});
-
-$header.find('.userMenuButton').on('click', function(){
-  const $b = $( this ),
-        type = $b.attr('data-type');
-  switch( type ) {
-    case 'logout':
-      alert('ログアウト');
-    break;
-  }
-});
-
-/* -------------------------------------------------- *\
   タイムテーブル作成
 \* -------------------------------------------------- */
-const seminarsJSON = {
-    "seminars": {
-        "A": {
-            "9": ["Java 初級講習", "サンプル 太郎", 0],
-            "10": ["Java 初級講習", "サンプル 花子", 1], // 1 申し込み済み
-            "13": ["マイクロサービスアーキテクチャとは", "サンプル 次郎", 2], // 2 満員
-        },
-        "B": {
-            "13": ["CI/CD デモ", "サンプル 花子", 0],
-        },
-        "C": {
-            "13": ["Java 初級講習", "サンプル 太郎", 0],
-        },
-    },
-    "mst_block": ["A", "B", "C", "D", ],
-    "mst_classes": ["9", "10", "11", "12", "13", "14", "15", "16", "17", ],
-};
+// seminarsJSON は html_template 側で設定
 const timeTable = new eventTimeTable( seminarsJSON, role ),
       $timeTable =  timeTable.init();
 $('#main').html( $timeTable );
@@ -88,13 +47,13 @@ const registerModalData = {
   'type': 'input',
   'title': 'セミナー登録',
   'contents': [
-    {'title': '講座名','name': 'seminar_name', 'type': 'select', 'option': ['mst_seminar', 'name']},
-    {'title': '時間','name': 'seminar_id', 'type': 'select', 'option': 'mst_classes'},
-    {'title': 'ブロック','name': 'block_name', 'type': 'select', 'option': 'mst_block'},
-    {'title': '定員','name': 'capacity', 'type': 'sync', 'option': ['mst_seminar', 'capacity']},
-    {'title': 'セミナー内容','name': 'seminar_overview', 'type': 'sync', 'option': ['mst_seminar', 'overview']},
-    {'title': '登壇者','name': 'speaker_name', 'type': 'select', 'option': ['mst_speaker', 'name']},
-    {'title': '登壇者プロフィール','name': 'speaker_profile', 'type': 'sync', 'option': ['mst_speaker', 'profile']},
+    {'title': '講座名',           'name': 'seminar_name',      'type': 'select', 'option': ['mst_seminar', 'name']},
+    {'title': '時間',             'name': 'seminar_id',        'type': 'select', 'option': 'mst_classes'},
+    {'title': 'ブロック',          'name': 'block_name',       'type': 'select', 'option': 'mst_block'},
+    {'title': '定員',              'name': 'capacity',         'type': 'sync',   'option': ['mst_seminar', 'capacity']},
+    {'title': 'セミナー内容',       'name': 'seminar_overview', 'type': 'sync',   'option': ['mst_seminar', 'overview']},
+    {'title': '登壇者',            'name': 'speaker_name',      'type': 'select', 'option': ['mst_speaker', 'name']},
+    {'title': '登壇者プロフィール', 'name': 'speaker_profile',   'type': 'sync',   'option': ['mst_speaker', 'profile']},
   ],
   'commands': [
     {'close': '閉じる'},

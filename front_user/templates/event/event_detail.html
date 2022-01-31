@@ -24,63 +24,71 @@
 {% block title %}event_detail{% endblock %}
 
 {% block header %}
-<div class="content-header">
-  <div class="page-title">
-    {{ header_data.event_name }}
-  </div>
-  <div class="header-menu page-menu">
-    {% for menu_item in header_data.menu_item_list %}
-    <div class="header-menu">
-      <a href="{{ menu_item.url_path }}">
-        <button type="button" value="{{ menu_item.url_path }}">
-          <label>{{ menu_item.name }}</label>
-        </button>
-      </a>
+<header id="header">
+  <div class="headerInner">
+    <h1 class="headerTitle">{{ header_data.event_name }}</h1>
+    <nav class="headerMenu">
+      <ul class="headerMenuList">
+        {% for item in header_data.menu_item_list %}
+        <li class="headerMenuItem"><a class="headerMenuLink" href="{{ item.url_path }}">{{ item.name }}</a></li>
+        {% endfor %}
+        {% if user_info.login is not defined or user_info.login is not sameas true %}
+        <li class="headerMenuItem"><a class="headerMenuLink" href="/s_login">ログイン</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% if user_info.login is defined and user_info.login is sameas true %}
+    <dl class="userInfo">
+      <dt class="userName">{{ user_info.name }}</dt>
+      <dd class="userIcon">U</dd>
+    </dl>
+    <div class="userMenu">
+      <ul class="userMenuList">
+        <li class="userMenuItem"><button class="userMenuButton" data-type="logout">ログアウト</button></li>
+      </ul>
     </div>
-    {% endfor %}
+    {% endif %}
   </div>
-  <div class="header-menu account-menu">
-    <button type="button" onclick="location.href='/login'">
-      <label>login</label>
-    </button>
-  </div>
-  <div class="floating-account-menu">
-    <button type="button">
-      <label>logout</label>
-    </button>
-  </div>
-</div>
+</header>
 {% endblock %}
 
 {% block content %}
-<div class="content-body">
-  <div class="content-area content-area-event-name">
-    <div id="event-name" class="event-name">
-      <label>{{ event_detail.event_name }}</label>
+<main id="main">
+  <article id="event-detail">
+    <div class="content-wrapper">
+      <div class="detail-body">
+        <table class="detail-contents">
+          <tbody class="detail-contents-body">
+            <tr class="cTR">
+              <th class="cTH">イベント名</th>
+              <td class="cTD">{{ event_detail.event_name }}</td>
+            </tr>
+            <tr class="cTR">
+              <th class="cTH">開催日</th>
+              <td class="cTD">
+                <script>
+                  let event_date_str = "{{ event_detail.event_date }}";
+                  let event_date = new Date(event_date_str);
+                  document.write(event_date.toLocaleString());
+                </script>
+              </td>
+            </tr>
+            <tr class="cTR">
+              <th class="cTH">概要</th>
+              <td class="cTD">{{ event_detail.event_overview }}</td>
+            </tr>
+            <tr class="cTR">
+              <th class="cTH">登壇者一覧</th>
+              <td class="cTD">{{ event_detail.speakers | join(',') }}</td>
+            </tr>
+            <tr class="cTR">
+              <th class="cTH">開催場所</th>
+              <td class="cTD">{{ event_detail.event_venue }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
-  <div class="content-area content-area-event-date">
-    <div id="event-date" class="event-date">
-      <label>{{ event_detail.event_date }}</label>
-    </div>
-  </div>
-  <div class="content-area content-area-event-overview">
-    <div id="event-overview" class="event-overview">
-      <label>{{ event_detail.event_overview }}</label>
-    </div>
-  </div>
-  <div class="content-area content-area-speakers">
-    <div id="speakers" class="speakers">
-      {% for person in event_detail.speakers %}
-      <label>{{ person }}</label>
-      {% endfor %}
-    </div>
-  </div>
-  <div class="content-area content-area-event-venue">
-    <div id="event-venue" class="event-venue">
-      <label>{{ event_detail.event_venue }}</label>
-    </div>
-  </div>
-
-</div>
+  </article>
+</main>
 {% endblock %}

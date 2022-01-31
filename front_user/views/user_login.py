@@ -22,7 +22,7 @@ from google.auth.transport import requests as google_requests
 user_login_app = Blueprint("user_login", __name__, template_folder="templates")
 logger = getLogger(__name__)
 
-@user_login_app.route("/", methods=["GET"])
+@user_login_app.route("/s_login", methods=["GET"])
 def user_login():
     logger.info("call: user_login")
 
@@ -50,12 +50,9 @@ def login_succeeded():
         id_token = request.json.get('id_token')
         user_id, user_name = _get_userinfo(id_token)
 
+        session['login'] = True
         session['user_id'] = user_id
         session['name'] = user_name
-
-        # debug
-        logger.info(session.sid)
-        logger.info(session)
 
     except Exception as e:
         raise
@@ -84,3 +81,13 @@ def _get_userinfo(id_token):
         raise
 
     return user_id, user_name
+
+@user_login_app.route("/logout", methods=["GET"])
+def user_logout():
+    logger.info("call: user_logout")
+
+    session.pop('login', None)
+    session.pop('user_id', None)
+    session.pop('name', None)
+
+    return '', 204

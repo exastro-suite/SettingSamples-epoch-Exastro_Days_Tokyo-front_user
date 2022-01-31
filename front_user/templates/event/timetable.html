@@ -19,6 +19,9 @@
 <link rel="stylesheet" href="{{ url_for("static", filename="css/timetable.css") }}" />
 {% endblock %}
 {% block script_js %}
+<script type="text/javascript">
+  let seminarsJSON = {{ timetable | tojson }};
+</script>
 <script src="{{ url_for("static", filename="js/timetable.js") }}"></script>
 {% endblock %}
 {% block title %}timetable{% endblock %}
@@ -26,23 +29,28 @@
 {% block header %}
 <header id="header">
   <div class="headerInner">
-    <h1 class="headerTitle">テストイベント</h1>
+    <h1 class="headerTitle">{{ header_data.event_name }}</h1>
     <nav class="headerMenu">
       <ul class="headerMenuList">
-        <li class="headerMenuItem"><a class="headerMenuLink" href="#">イベント一覧</a></li>
-        <li class="headerMenuItem"><a class="headerMenuLink" href="#">ログイン</a></li>
+        {% for item in header_data.menu_item_list %}
+        <li class="headerMenuItem"><a class="headerMenuLink" href="{{ item.url_path }}">{{ item.name }}</a></li>
+        {% endfor %}
+        {% if user_info.login is not defined or user_info.login is not sameas true %}
+        <li class="headerMenuItem"><a class="headerMenuLink" href="/s_login">ログイン</a></li>
+        {% endif %}
       </ul>
     </nav>
+    {% if user_info.login is defined and user_info.login is sameas true %}
     <dl class="userInfo">
-      <dt class="userName">Epoch Uuser</dt>
-      <dd class="userIcon">EU</dd>
+      <dt class="userName">{{ user_info.name }}</dt>
+      <dd class="userIcon">U</dd>
     </dl>
     <div class="userMenu">
       <ul class="userMenuList">
-        <li class="userMenuItem"><button class="userMenuButton" data-type="dummy">dummy</button></li>
         <li class="userMenuItem"><button class="userMenuButton" data-type="logout">ログアウト</button></li>
       </ul>
     </div>
+    {% endif %}
   </div>
 </header>
 {% endblock %}

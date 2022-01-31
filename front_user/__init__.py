@@ -56,6 +56,6 @@ def create_app(test_config=None):
 
     app.register_blueprint(event_app, url_prefix="/")
     app.register_blueprint(seminar_app, url_prefix="/seminar")
-    app.register_blueprint(user_login_app, url_prefix="/login")
+    app.register_blueprint(user_login_app, url_prefix="/")
 
     return app
