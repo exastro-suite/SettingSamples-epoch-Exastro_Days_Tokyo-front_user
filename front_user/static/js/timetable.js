@@ -92,6 +92,8 @@ $adminMenu.find('.adminMenuButton').on('click', function(){
             const value = m.getValue();
             console.log(value);
             alert('登録しました。');
+
+            return true; // if true, modal close
           }
         } );
       }, 300 );
@@ -117,6 +119,8 @@ const eventModalData = {
   'commands': [
     {'close': '閉じる'},
     {'apply': '申し込む'},
+    {'cancel': '申し込み解除'},
+    {'over': '申し込み解除'},
   ]
 };
 
@@ -124,30 +128,71 @@ const m = new modal();
 $timeTable.find('.event').on('click', function(){
   const $event = $( this );
   $event.add( $timeTable ).addClass( loadClassName );
-  
-  // リストの読み込み
-  setTimeout( function(){
+
+  let seminar_id = $event.attr('data-seminar-id');
+
+  $.ajax({
+    type: 'GET',
+    url: '/seminar/' + seminar_id,
+  })
+  .done(function(xhr) {
     $event.add( $timeTable ).removeClass( loadClassName );
-    
-    const dummy = {
-      "seminar_id": 11,
-      "seminar_name": "Java 初級講習",
-      "seminar_overview": "長い\nマルチライン\nテキスト\nセミナーの内容を記述する",
-      "start_datetime": "2022-01-13T09:00:00.000Z",
-      "block_id": 5,
-      "block_name": "ブロックA",
-      "capacity": 20,
-      "speaker_id": 23,
-      "speaker_name": "サンプル 太郎",
-      "speaker_profile": "長い\nマルチライン\nテキスト\n登壇者のプロフィールを記述する",
-    };
-    const $modal = m.open( eventModalData, dummy, {
-      'apply': function(){
-        // 申し込む処理
-        alert('申し込みました。');
+
+    let dispData = xhr.result;
+
+    if (dispData['participated']) {
+      eventModalData['commands'].pop('apply');
+    } else {
+      eventModalData['commands'].pop('cancel');
+    }
+    if (dispData['capacityOver']) {
+      eventModalData['commands'].pop('apply');
+    } 
+
+    const $modal = m.open( eventModalData, dispData, {
+      'apply': function(caller){
+        seminar_id = caller.data['seminar_id'];
+        $.ajax({
+          type: 'POST',
+          url: '/signup_seminar',
+          contentType: 'application/json',
+          data: JSON.stringify({'seminar_id': seminar_id}),
+          async: false
+        })
+        .done(function(xhr) {
+          window.location.reload();
+          return true; // if true, modal close
+        })
+        .fail(function(xhr) {
+
+          return false; // if true, modal close
+        });
+      },
+      'cancel': function(caller){
+        seminar_id = caller.data['seminar_id'];
+        $.ajax({
+          type: 'POST',
+          url: '/cancel_seminar',
+          contentType: 'application/json',
+          data: JSON.stringify({'seminar_id': seminar_id}),
+          async: false
+        })
+        .done(function(xhr) {
+          window.location.reload();
+          return true; // if true, modal close
+        })
+        .fail(function(xhr) {
+
+          return false; // if true, modal close
+        });
+      },
+      'over': function(caller){
+        // 何もしない
+        // ボタンdisabledにしたい
+        return false; // if true, modal close
       }
     } );
-  }, 2000 );
+  });
 
 });
 
@@ -256,13 +301,14 @@ eventTimeTable.prototype = {
   'event': function( block, time ){
     const e = this;
     if ( e.seminars[block] && e.seminars[block][time] ) {
-      const eventTime =  time + ':00 ～ ' + (Number(time)+1),
+      const eventTime =  time + ':00 ～ ' + (Number(time)+1) + ':00',
             eventTitle = ( e.seminars[block][time][0] )? e.seminars[block][time][0]: '',
             eventAuthor = ( e.seminars[block][time][1] )? e.seminars[block][time][1]: '',
+            seminarId = ( e.seminars[block][time][3] )? e.seminars[block][time][3]: '',
             eventStatus = ( e.seminars[block][time][2] && e.type !== 'admin')? e.seminars[block][time][2]: 0;
       return ''
-      + '<dl class="event" data-status="' + eventStatus + '" data-block="' + block + '" data-time="' + time + '">'
-        + '<dt class="eventTime">' + eventTime + ':00</dt>'
+      + '<dl class="event" data-seminar-id="' + seminarId + '" data-status="' + eventStatus + '" data-block="' + block + '" data-time="' + time + '">'
+        + '<dt class="eventTime">' + eventTime + '</dt>'
         + (( e.type === 'admin')? '<dd class="eventDelete"><button class="eventButton" data-type="delete"></button></dd>': '')
         + '<dd class="eventTitle">' + textEntities( eventTitle ) + '</dd>'
         + '<dd class="eventAuthor">' + textEntities( eventAuthor ) + '</dd>'
@@ -316,12 +362,16 @@ modal.prototype = {
     $modal.find('.modalCloseButton, .modalMenuButton').on('click', function(){
       const $button = $( this ),
             type = $button.attr('data-type');
-      
+
+      var closing = true;
       if ( functions[type] ) {
-         functions[type]();
+        closing = functions[type](m);
       }
-      $modal.remove();
-      m.$body.removeClass('modalOpen');
+
+      if (closing) {
+        $modal.remove();
+        m.$body.removeClass('modalOpen');
+      }
     });
     
     return $modal;  
@@ -435,5 +485,3 @@ modal.prototype = {
     return l;
   }
 };
-
-$(function(){ init(); });

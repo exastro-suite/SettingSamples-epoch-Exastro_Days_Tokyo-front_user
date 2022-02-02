@@ -12,6 +12,8 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+import json
+
 from datetime import datetime
 from flask import Blueprint, render_template, request, jsonify, session
 from logging import getLogger
@@ -89,8 +91,8 @@ def timetable(event_id):
         'name': session.get('name', ''),
     }
 
+    # header準備
     event_detail = event.get_event_detail(event_id)
-    timetable = event.get_timetable(event_id)
 
     header_data = {
         "event_name": event_detail['event_name'],
@@ -106,6 +108,26 @@ def timetable(event_id):
         ],
     }
 
+    # body準備
+    user_id = session.get('user_id', '')
+    kind_of_sso = 'google'
+    tmp_seminars = event.get_timetable(event_id, user_id, kind_of_sso)
+    #speaker_id_list = [x['speaker_id'] for x in tmp_seminars]
+    #speakers = event.get_speaker(speaker_id_list)
+    speakers_dict = {}
+    #speakers_dict = { x['speaker_id']: {
+    #                    'speaker_name': x['speaker_name'],
+    #                    'speaker_profile': x['speaker_profile']
+    #                    } for x in speakers}
+    master = event.get_master()
+
+    seminars = construct_seminar_data(tmp_seminars, speakers_dict)
+    timetable = {
+        "seminars": seminars,
+        "mst_block": master['block'],
+        "mst_classes": master['class'],
+    }
+
     return render_template(
         "event/timetable.html", user_info=user_info, header_data=header_data, timetable=timetable
     )
@@ -114,3 +136,59 @@ def str_to_datetime(datetime_str):
 
     # return datetime.fromisoformat(datetime_str.replace('Z', '+00:00')) # python3.7~
     return datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M:%S.%fZ') # not %z, because https://bugs.python.org/issue15873
+
+def construct_seminar_data(tmp_seminars, speakers_dict):
+
+    seminar = {}
+    for item in tmp_seminars:
+
+        # debug
+        logger.debug(json.dumps(item))
+
+        block_name = item['block_name']
+        class_str = str(str_to_datetime(item['start_datetime']).hour)
+        seminar_title = item['seminar_name']
+        seminar_author = ''
+        #seminar_author = speakers_dict[item['speaker_id']]['speaker_name']
+        if item['participated'] == "true":
+            seminar_status = 1
+        elif item['capacity_over'] == "true":
+            seminar_status = 2
+        else:
+            seminar_status = 0
+        seminar_id = item['seminar_id']
+
+        # block要素が無ければ作成
+        if block_name not in seminar:
+            seminar[block_name] = {}
+
+        seminar[block_name][class_str] = [seminar_title, seminar_author, seminar_status, seminar_id]
+
+    return seminar
+
+@event_app.route("/signup_seminar", methods=["POST"])
+def signup_seminar():
+    logger.info("call: signup_seminar")
+
+    user_id = session.get('user_id', '')
+    user_name = session.get('name', '')
+    kind_of_sso = 'google'
+    seminar_id = request.json.get('seminar_id')
+
+    #logger.debug("seminar_id: {}, user_id: {}, kind_of_sso:{}".format(seminar_id, user_id, kind_of_sso))
+    event.signup_seminar(seminar_id, user_id, user_name, kind_of_sso)
+
+    return '', 201
+
+@event_app.route("/cancel_seminar", methods=["POST"])
+def cancel_seminar():
+    logger.info("call: cancel_seminar")
+
+    user_id = session.get('user_id', '')
+    kind_of_sso = 'google'
+    seminar_id = request.json.get('seminar_id')
+
+    #logger.debug("seminar_id: {}, user_id: {}, kind_of_sso:{}".format(seminar_id, user_id, kind_of_sso))
+    event.cancel_seminar(seminar_id, user_id, kind_of_sso)
+
+    return '', 204

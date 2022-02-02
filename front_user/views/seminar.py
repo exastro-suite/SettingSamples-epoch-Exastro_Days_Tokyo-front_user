@@ -12,6 +12,8 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+import json
+
 from datetime import datetime
 from flask import Blueprint, render_template, request, jsonify
 from logging import getLogger
@@ -26,6 +28,8 @@ logger = getLogger(__name__)
 def seminarDetail(seminar_id):
     logger.info("call: seminarDetail [seminar_id={}]".format(seminar_id))
 
-    seminar_detail = seminar.get_seminar_detail()
+    seminar_detail = seminar.get_seminar_detail(seminar_id)
+
+    logger.debug(json.dumps(seminar_detail))
 
     return jsonify({'result': seminar_detail})

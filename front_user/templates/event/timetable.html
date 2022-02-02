@@ -19,10 +19,11 @@
 <link rel="stylesheet" href="{{ url_for("static", filename="css/timetable.css") }}" />
 {% endblock %}
 {% block script_js %}
-<script type="text/javascript">
-  let seminarsJSON = {{ timetable | tojson }};
-</script>
 <script src="{{ url_for("static", filename="js/timetable.js") }}"></script>
+<script type="text/javascript">
+let seminarsJSON = {{ timetable | tojson }};
+$(function(){ init(); });
+</script>
 {% endblock %}
 {% block title %}timetable{% endblock %}
 

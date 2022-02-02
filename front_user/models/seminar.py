@@ -38,7 +38,7 @@ def get_seminar_detail(seminar_id):
         if response.status_code != 200:
             raise Exception(response)
 
-        seminar_detail = response.json
+        seminar_detail = response.json()
 
     except Exception as e:
         logger.debug(e)
