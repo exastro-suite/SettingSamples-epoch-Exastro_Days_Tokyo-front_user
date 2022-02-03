@@ -17,7 +17,6 @@ import json
 from datetime import datetime
 from flask import Blueprint, render_template, request, jsonify, session
 from logging import getLogger
-from operator import attrgetter
 
 from front_user.models import event
 
@@ -25,8 +24,8 @@ event_app = Blueprint("event", __name__, template_folder="templates")
 logger = getLogger(__name__)
 
 @event_app.route("/", methods=["GET"])
-def eventList():
-    logger.info("call: event")
+def event_list():
+    logger.info("call: event_list")
 
     events = event.get_events()
 
@@ -53,8 +52,8 @@ def eventList():
     )
 
 @event_app.route("/<int:event_id>", methods=["GET"])
-def eventDetail(event_id):
-    logger.info("call: eventDetail [event_id={}]".format(event_id))
+def event_detail(event_id):
+    logger.info("call: event_detail [event_id={}]".format(event_id))
 
     user_info = {
         'login': session.get('login', False),
