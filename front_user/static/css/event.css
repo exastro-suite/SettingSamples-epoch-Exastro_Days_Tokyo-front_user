@@ -83,6 +83,119 @@ transition-duration: .1s;
 /* cursor: pointer; */
 user-select: none;
 }
+.event.loading::before {
+content: '';
+display: block;
+position: absolute;
+left: 0; top: 0;
+z-index: 50;
+width: 100%; height: 100%;
+background-color: rgba( 255,255,255,.8 );
+border-radius: 4px;
+}
+.event.loading::after {
+content: '';
+display: block;
+position: absolute;
+left: 50%; top: 50%;
+z-index: 100;
+transform: translate(-50%,-50%);
+width: 48px; height: 48px;
+border: 4px solid #CCC;
+border-bottom-color: rgba( 255,255,255,.5 );
+border-radius: 50%;
+animation: loading 1s infinite;
+}
+@keyframes loading {
+to { transform: translate(-50%,-50%) rotate(360deg); }
+}
+.event[data-status="1"] {
+background-color: #DFF4CF;
+border-color: #80D13D;
+}
+.event[data-status="2"] {
+background-color: #F4CCCC;
+border-color: #DE6666;
+}
+.event:hover {
+transform: scale(1.03);
+}
+.event.active {
+transform: scale(.98);
+}
+.eventDelete {
+position: absolute;
+right: 4px; top: 4px;
+z-index: 1;
+width: 24px; height: 24px;
+}
+.eventButton {
+display: block;
+position: relative;
+z-index: 0;
+width: 100%; height: 100%;
+margin: 0; padding: 0;
+background-color: #FFF;
+border: none;
+border-radius: 50%;
+cursor: pointer;
+}
+.eventButton:focus {
+box-shadow: 0 0 0 1px #0070FF;
+}
+.eventButton:hover:focus {
+box-shadow: none;
+}
+.eventButton:hover {
+transform: scale(1.1);
+}
+.eventButton:active {
+transform: scale(0.9);
+}
+.eventButton::before,
+.eventButton::after {
+content: '';
+display: block;
+position: absolute;
+left: 50%; top: 50%;
+width: 50%; height: 2px;
+background-color: #DD0000;
+}
+.eventButton::before {
+transform: translate(-50%,-50%) rotate(-45deg);
+}
+.eventButton::after {
+transform: translate(-50%,-50%) rotate(45deg);
+}
+.eventTitle {
+overflow: hidden;
+display: -webkit-box;
+height: 42px;
+line-height: 1.5;
+font-size: 14px;
+color: #555;
+word-break: break-all;
+-webkit-line-clamp: 2;
+-webkit-box-orient: vertical;
+}
+.eventAuthor {
+overflow: hidden;
+margin-top: 8px; padding-top: 10px;
+border-top: 1px solid rgba( 0,0,0,.1 );
+line-height: 1.1;
+white-space: nowrap;
+text-overflow: ellipsis;
+font-size: 12px;
+color: #888;
+}
+.event[data-status="1"] > * {
+border-color: #BFE89E;
+color: #4D9E0A;
+}
+.event[data-status="2"] > * {
+border-color: #FFB3B3;
+color: #D94D4D;
+}
 .blockItem a {
 text-decoration:none;
 }
