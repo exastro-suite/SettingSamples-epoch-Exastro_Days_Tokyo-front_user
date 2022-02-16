@@ -434,6 +434,7 @@ background-color: rgba( 0,0,0,.1 );
 .modalMenuButton[data-type="register"] {
 background-color: #80D13D;
 }
-.modalMenuButton[data-type="over"] {
+.modalMenuButton[data-type="over"],
+.modalMenuButton[data-type="cancel"] {
 background-color: #bb2142;
 }
