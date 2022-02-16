@@ -22,19 +22,24 @@ from logging import getLogger
 logger = getLogger(__name__)
 
 
-def get_seminar_detail(seminar_id):
+def get_seminar_detail(seminar_id, user_id = None, kind_of_sso = None):
     logger.debug("Method called.")
 
     base_url = create_base_url()
     api_path = '/api/v1/seminar/{}'.format(seminar_id)
     header = create_header()
-    body = {}
+    params = {}
+
+    if user_id:
+        params['user_id'] = user_id
+    if kind_of_sso:
+        params['kind_of_sso'] = kind_of_sso
 
     seminar_detail = []
     try:
         # 取得
-        logger.debug("request_url: {}".format(base_url + api_path))
-        response = requests.get(base_url + api_path, headers=header, data=json.dumps(body))
+        logger.debug("request_url: {}, params: {}".format(base_url + api_path, json.dumps(params)))
+        response = requests.get(base_url + api_path, headers=header, params=params)
         if response.status_code != 200:
             raise Exception(response)
 

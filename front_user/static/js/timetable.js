@@ -116,13 +116,14 @@ const eventModalData = {
     {'title': '登壇者','name': 'speaker_name'},
     {'title': '登壇者プロフィール','name': 'speaker_profile'},
   ],
-  'commands': [
-    {'close': '閉じる'},
-    {'apply': '申し込む'},
-    {'cancel': '申し込み解除'},
-    {'over': '申し込み解除'},
-  ]
+  'commands': []
 };
+// const eventModalCommandsTemplate = [
+//   {'close': '閉じる'},
+//   {'apply': '申し込む'},
+//   {'cancel': '申し込み解除'},
+//   {'over': '申し込み停止'},
+// ];
 
 const m = new modal();
 $timeTable.find('.event').on('click', function(){
@@ -139,15 +140,17 @@ $timeTable.find('.event').on('click', function(){
     $event.add( $timeTable ).removeClass( loadClassName );
 
     let dispData = xhr.result;
+    var eventModalCommands = [{'close': '閉じる'}];
 
     if (dispData['participated']) {
-      eventModalData['commands'].pop('apply');
+      eventModalCommands.push({'cancel': '申し込み解除'});
+    } else if (dispData['capacity_over']) {
+      eventModalCommands.push({'over': '申し込み停止'});
     } else {
-      eventModalData['commands'].pop('cancel');
+      eventModalCommands.push({'apply': '申し込む'});
     }
-    if (dispData['capacityOver']) {
-      eventModalData['commands'].pop('apply');
-    } 
+
+    eventModalData['commands'] = eventModalCommands;
 
     const $modal = m.open( eventModalData, dispData, {
       'apply': function(caller){

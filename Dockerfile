@@ -24,5 +24,7 @@ WORKDIR /app
 
 COPY ./ /app/
 
+RUN mkdir /app/log
+
 ENV FLASK_APP=front_user
 CMD ["flask", "run", "-h", "0.0.0.0","--with-threads"]

@@ -90,7 +90,7 @@ def get_timetable(event_id, user_id = None, kind_of_sso = None):
     event_timetable = {}
     try:
         # 取得
-        logger.debug("request_url: {}".format(base_url + api_path))
+        logger.debug("request_url: {}, params: {}".format(base_url + api_path, json.dumps(params)))
         response = requests.get(base_url + api_path, headers=header, params=params)
         if response.status_code != 200:
             raise Exception(response)

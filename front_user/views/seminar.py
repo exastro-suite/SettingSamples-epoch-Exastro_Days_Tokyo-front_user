@@ -15,7 +15,7 @@
 import json
 
 from datetime import datetime
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, session
 from logging import getLogger
 from operator import attrgetter
 
@@ -25,10 +25,13 @@ seminar_app = Blueprint("seminar", __name__, template_folder="templates")
 logger = getLogger(__name__)
 
 @seminar_app.route("/<int:seminar_id>", methods=["GET"])
-def seminarDetail(seminar_id):
-    logger.info("call: seminarDetail [seminar_id={}]".format(seminar_id))
+def seminar_detail(seminar_id):
+    logger.info("call: seminar_detail [seminar_id={}]".format(seminar_id))
 
-    seminar_detail = seminar.get_seminar_detail(seminar_id)
+    user_id = session.get('user_id', '')
+    kind_of_sso = 'google'
+
+    seminar_detail = seminar.get_seminar_detail(seminar_id, user_id, kind_of_sso)
 
     logger.debug(json.dumps(seminar_detail))
 

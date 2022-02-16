@@ -149,9 +149,9 @@ def construct_seminar_data(tmp_seminars, speakers_dict):
         seminar_title = item['seminar_name']
         seminar_author = ''
         #seminar_author = speakers_dict[item['speaker_id']]['speaker_name']
-        if item['participated'] == "true":
+        if item['participated'] == True:
             seminar_status = 1
-        elif item['capacity_over'] == "true":
+        elif item['capacity_over'] == True:
             seminar_status = 2
         else:
             seminar_status = 0
