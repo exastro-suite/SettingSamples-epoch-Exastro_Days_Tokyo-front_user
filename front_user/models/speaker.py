@@ -22,20 +22,16 @@ from logging import getLogger
 logger = getLogger(__name__)
 
 
-def get_seminar_detail(seminar_id, user_id = None, kind_of_sso = None):
+
+def get_speaker(speaker_id_list):
     logger.debug("Method called.")
 
     base_url = _create_base_url()
-    api_path = '/api/v1/seminar/{}'.format(seminar_id)
+    api_path = '/api/v1/speaker'
     header = create_header()
-    params = {}
+    params = {"speaker_id": speaker_id_list}
 
-    if user_id:
-        params['user_id'] = user_id
-    if kind_of_sso:
-        params['kind_of_sso'] = kind_of_sso
-
-    seminar_detail = []
+    speakers = {}
     try:
         # 取得
         logger.debug("request_url: {}, params: {}".format(base_url + api_path, json.dumps(params)))
@@ -43,7 +39,7 @@ def get_seminar_detail(seminar_id, user_id = None, kind_of_sso = None):
         if response.status_code != 200:
             raise Exception(response)
 
-        seminar_detail = response.json()
+        speakers = response.json()
 
     except Exception as e:
         logger.debug(e)
@@ -51,26 +47,25 @@ def get_seminar_detail(seminar_id, user_id = None, kind_of_sso = None):
 
         # todo
 
-    return seminar_detail
+    return speakers
 
-def signup_seminar(seminar_id, user_id, user_name, kind_of_sso):
+def get_speaker_detail(speaker_id):
     logger.debug("Method called.")
 
     base_url = _create_base_url()
-    api_path = '/api/v1/participant'
+    api_path = '/api/v1/speaker/{}'.format(speaker_id)
     header = create_header()
-    body = {
-        'seminar_id': seminar_id,
-        'user_id': user_id,
-        'user_name': user_name,
-        'kind_of_sso': kind_of_sso,
-    }
+    body = {}
 
+    speaker = {}
     try:
+        # 取得
         logger.debug("request_url: {}".format(base_url + api_path))
-        response = requests.post(base_url + api_path, headers=header, data=json.dumps(body))
-        if response.status_code != 201:
+        response = requests.get(base_url + api_path, headers=header, data=json.dumps(body))
+        if response.status_code != 200:
             raise Exception(response)
+
+        speaker = response.json()
 
     except Exception as e:
         logger.debug(e)
@@ -78,33 +73,7 @@ def signup_seminar(seminar_id, user_id, user_name, kind_of_sso):
 
         # todo
 
-    return None
-
-def cancel_seminar(seminar_id, user_id, kind_of_sso):
-    logger.debug("Method called.")
-
-    base_url = _create_base_url()
-    api_path = '/api/v1/participant'
-    header = create_header()
-    query = {
-        'seminar_id': seminar_id,
-        'user_id': user_id,
-        'kind_of_sso': kind_of_sso,
-    }
-
-    try:
-        logger.debug("request_url: {}".format(base_url + api_path))
-        response = requests.delete(base_url + api_path, headers=header, params=query)
-        if response.status_code != 204:
-            raise Exception(response)
-
-    except Exception as e:
-        logger.debug(e)
-        logger.debug("traceback:" + traceback.format_exc())
-
-        # todo
-
-    return None
+    return speaker
 
 def create_header():
     # ヘッダ情報
@@ -116,8 +85,8 @@ def create_header():
 
 def _create_base_url():
 
-    protocol = os.environ['SERVICE_EVENT_PROTOCOL']
-    host = os.environ['SERVICE_EVENT_HOST']
-    port = os.environ['SERVICE_EVENT_PORT']
+    protocol = os.environ['SERVICE_SPEAKER_PROTOCOL']
+    host = os.environ['SERVICE_SPEAKER_HOST']
+    port = os.environ['SERVICE_SPEAKER_PORT']
 
     return protocol + '://' + host + ':' + port
