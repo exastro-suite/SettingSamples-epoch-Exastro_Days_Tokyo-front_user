@@ -17,6 +17,8 @@ import json
 from flask import Blueprint, request, jsonify, session
 from logging import getLogger
 
+from . import NO_DATA_STR
+from . import str_to_datetime
 from ..models import seminar
 from ..models import speaker
 
@@ -31,9 +33,16 @@ def seminar_detail(seminar_id):
     kind_of_sso = 'google'
 
     seminar_detail = seminar.get_seminar_detail(seminar_id, user_id, kind_of_sso)
+
     speaker_data = speaker.get_speaker_detail(seminar_detail['speaker_id'])
-    seminar_detail['speaker_name'] = speaker_data['speaker_name']
-    seminar_detail['speaker_profile'] = speaker_data['speaker_profile']
+    if speaker_data:
+        seminar_detail['speaker_name'] = speaker_data['speaker_name']
+        seminar_detail['speaker_profile'] = speaker_data['speaker_profile']
+    else:
+        seminar_detail['speaker_name'] = NO_DATA_STR
+        seminar_detail['speaker_profile'] = NO_DATA_STR
+
+    seminar_detail['seminar_hour'] = str(str_to_datetime(seminar_detail['start_datetime']).hour) + ":00"
 
     logger.debug(json.dumps(seminar_detail))
 

@@ -48,7 +48,7 @@ const registerModalData = {
   'title': 'セミナー登録',
   'contents': [
     {'title': '講座名',           'name': 'seminar_name',      'type': 'select', 'option': ['mst_seminar', 'name']},
-    {'title': '時間',             'name': 'start_datetime',    'type': 'select', 'option': 'mst_classes'},
+    {'title': '時間',             'name': 'seminar_hour',    'type': 'select', 'option': 'mst_classes'},
     {'title': 'ブロック',          'name': 'block_name',       'type': 'select', 'option': 'mst_block'},
     {'title': '定員',              'name': 'capacity',         'type': 'sync',   'option': ['mst_seminar', 'capacity']},
     {'title': 'セミナー内容',       'name': 'seminar_overview', 'type': 'sync',   'option': ['mst_seminar', 'overview']},
@@ -109,7 +109,7 @@ const eventModalData = {
   'title': 'セミナー詳細',
   'contents': [
     {'title': '講座名','name': 'seminar_name'},
-    {'title': '時間','name': 'start_datetime'},
+    {'title': '時間','name': 'seminar_hour'},
     {'title': 'ブロック','name': 'block_name'},
     {'title': '定員','name': 'capacity'},
     {'title': 'セミナー内容','name': 'seminar_overview'},

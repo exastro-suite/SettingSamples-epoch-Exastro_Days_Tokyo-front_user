@@ -15,9 +15,11 @@
 import json
 
 from datetime import datetime
-from flask import Blueprint, render_template, request, jsonify, session
+from flask import Blueprint, render_template, request, jsonify, session, abort
 from logging import getLogger
 
+from . import NO_DATA_STR
+from . import str_to_datetime
 from ..models import event
 from ..models import speaker
 
@@ -62,6 +64,9 @@ def event_detail(event_id):
     }
 
     event_detail = event.get_event_detail(event_id)
+    if not event_detail:
+        abort(404)
+
     speakers = speaker.get_speaker(event_detail['speaker_ids'])
     event_detail['speakers'] = [ x['speaker_name'] for x in speakers ]
 
@@ -94,6 +99,8 @@ def timetable(event_id):
 
     # header準備
     event_detail = event.get_event_detail(event_id)
+    if not event_detail:
+        abort(404)
 
     header_data = {
         "event_name": event_detail['event_name'],
@@ -126,11 +133,6 @@ def timetable(event_id):
         "event/timetable.html", user_info=user_info, header_data=header_data, timetable=timetable
     )
 
-def str_to_datetime(datetime_str):
-
-    # return datetime.fromisoformat(datetime_str.replace('Z', '+00:00')) # python3.7~
-    return datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M:%S.%fZ') # not %z, because https://bugs.python.org/issue15873
-
 def construct_seminar_data(tmp_seminars):
 
     seminar = {}
@@ -142,8 +144,13 @@ def construct_seminar_data(tmp_seminars):
         block_name = item['block_name']
         class_str = str(str_to_datetime(item['start_datetime']).hour)
         seminar_title = item['seminar_name']
+
         speaker_data = speaker.get_speaker_detail(item['speaker_id'])
-        seminar_author = speaker_data['speaker_name']
+        if speaker_data:
+            seminar_author = speaker_data['speaker_name']
+        else:
+            seminar_author = NO_DATA_STR
+
         if item['participated'] == True:
             seminar_status = 1
         elif item['capacity_over'] == True:
